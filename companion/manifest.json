@@ -1,0 +1,26 @@
+{
+	"id": "Bob-CORXnet",
+	"name": "Bob CORXnet",
+	"shortname": "CORXnet",
+	"description": "Control CORXnet devices with Companion",
+	"version": "1.1.1",
+	"license": "MIT",
+	"repository": "git+https://github.com/bitfocus/companion-module-Bob-CORXnet-1.1.1.git",
+	"bugs": "https://github.com/bitfocus/companion-module-Bob-CORXnet-1.1.1/issues",
+	"maintainers": [
+		{
+			"name": "Bob",
+			"email": "MRBOOCN@QQ.COM"
+		}
+	],
+	"runtime": {
+		"type": "node22",
+		"api": "nodejs-ipc",
+		"apiVersion": "0.0.0",
+		"entrypoint": "../main.js"
+	},
+	"legacyIds": [],
+	"manufacturer": "Bob",
+	"products": ["CORXnet"],
+	"keywords": ["CORXnet", "control", "switch"]
+}
