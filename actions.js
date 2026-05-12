@@ -20,11 +20,12 @@ module.exports = function (self) {
 				{
 					id: 'action',
 					type: 'dropdown',
-					label: '动作',
+					label: '操作',
 					width: 6,
 					choices: [
 						{ id: 'on', label: '打开' },
-						{ id: 'off', label: '关闭' }
+						{ id: 'off', label: '关闭' },
+						{ id: 'toggle', label: '切换' }
 					],
 					default: 'on'
 				},
@@ -43,14 +44,19 @@ module.exports = function (self) {
 				const { switch: switchId, action, delay } = event.options
 				const command = { res: '123' }
 				
-				if (action === 'on') {
-					command[switchId] = 110000
-				} else {
-					command[switchId] = 100000
+				let targetAction = action
+				
+				// 切换操作：根据当前状态决定打开或关闭
+				if (action === 'toggle') {
+					const currentState = self.deviceState[switchId] || 0
+					targetAction = currentState === 1 ? 'off' : 'on'
 				}
 				
+				// 设置命令值
+				command[switchId] = targetAction === 'on' ? 110000 : 100000
+				
+				// 延迟发送或立即发送
 				if (delay && delay > 0) {
-					self.log('debug', `延迟命令执行 ${delay}ms`)
 					setTimeout(() => {
 						self.sendCommand(command)
 					}, delay)
@@ -60,13 +66,5 @@ module.exports = function (self) {
 			},
 		},
 
-		// 读取所有状态
-		read_all_status: {
-			name: '读取所有状态',
-			options: [],
-			callback: async (event) => {
-				self.readAllStatus()
-			},
-		},
 	})
 }

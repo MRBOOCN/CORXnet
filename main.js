@@ -3,6 +3,7 @@ const UpgradeScripts = require('./upgrades')
 const UpdateActions = require('./actions')
 const UpdateFeedbacks = require('./feedbacks')
 const UpdateVariableDefinitions = require('./variables')
+const UpdatePresets = require('./presets')
 
 const REGEX_IP_OR_HOST = '/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3})$|^((([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]).)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9]))$/'
 
@@ -25,12 +26,7 @@ class ModuleInstance extends InstanceBase {
 	}
 
 	async init(config) {
-		this.config = config
-
-		this.updateActions() // export actions
-		this.updateFeedbacks() // export feedbacks
-		this.updateVariableDefinitions() // export variable definitions
-
+		this.updateStatus(InstanceStatus.Disconnected)
 		await this.configUpdated(config)
 	}
 
@@ -46,22 +42,33 @@ class ModuleInstance extends InstanceBase {
 	}
 
 	async configUpdated(config) {
+		// 清理旧连接
 		if (this.udp) {
 			this.udp.destroy()
-			delete this.udp
+			this.udp = null
 		}
-
 		if (this.socket) {
 			this.socket.destroy()
-			delete this.socket
+			this.socket = null
 		}
 
 		this.config = config
 
-		if (this.config.prot == 'tcp') {
-			this.init_tcp()
-		} else if (this.config.prot == 'udp') {
-			this.init_udp()
+		// 重新注册功能
+		UpdateActions(this)
+		UpdateFeedbacks(this)
+		UpdateVariableDefinitions(this)
+		this.setPresetDefinitions(UpdatePresets(this))
+
+		// 初始化连接
+		if (this.config.host) {
+			if (this.config.prot === 'tcp') {
+				this.init_tcp()
+			} else if (this.config.prot === 'udp') {
+				this.init_udp()
+			}
+		} else {
+			this.updateStatus(InstanceStatus.BadConfig)
 		}
 	}
 
@@ -139,6 +146,8 @@ class ModuleInstance extends InstanceBase {
 			this.udp.on('status_change', (status, message) => {
 				this.updateStatus(status, message)
 			})
+
+			this.readAllStatus()
 		} else {
 			this.updateStatus(InstanceStatus.BadConfig)
 		}
@@ -157,6 +166,11 @@ class ModuleInstance extends InstanceBase {
 
 			this.socket.on('status_change', (status, message) => {
 				this.updateStatus(status, message)
+			})
+
+			this.socket.on('connect', () => {
+				this.log('debug', 'TCP连接已建立')
+				this.readAllStatus()
 			})
 
 			this.socket.on('error', (err) => {
@@ -180,8 +194,6 @@ class ModuleInstance extends InstanceBase {
 					this.setVariableValues({ tcp_response: dataResponse })
 				}
 			})
-
-			this.readAllStatus()
 		} else {
 			this.updateStatus(InstanceStatus.BadConfig)
 		}
@@ -262,17 +274,6 @@ class ModuleInstance extends InstanceBase {
 		this.sendCommand({ readall: true, res: '123' })
 	}
 
-	updateActions() {
-		UpdateActions(this)
 	}
-
-	updateFeedbacks() {
-		UpdateFeedbacks(this)
-	}
-
-	updateVariableDefinitions() {
-		UpdateVariableDefinitions(this)
-	}
-}
 
 runEntrypoint(ModuleInstance, UpgradeScripts)
