@@ -33,7 +33,8 @@ module.exports = function (self) {
 						switch: 'A01'
 					},
 					style: {
-						bgcolor: 0x00c000
+						bgcolor: 0x00c000,
+						color: 0x000000
 					}
 				}
 			]
@@ -71,7 +72,8 @@ module.exports = function (self) {
 						switch: 'A02'
 					},
 					style: {
-						bgcolor: 0x00c000
+						bgcolor: 0x00c000,
+						color: 0x000000
 					}
 				}
 			]
@@ -109,7 +111,8 @@ module.exports = function (self) {
 						switch: 'A03'
 					},
 					style: {
-						bgcolor: 0x00c000
+						bgcolor: 0x00c000,
+						color: 0x000000
 					}
 				}
 			]
@@ -147,7 +150,8 @@ module.exports = function (self) {
 						switch: 'A04'
 					},
 					style: {
-						bgcolor: 0x00c000
+						bgcolor: 0x00c000,
+						color: 0x000000
 					}
 				}
 			]
