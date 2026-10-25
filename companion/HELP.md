@@ -43,6 +43,7 @@ Bob CORXnet模块是一个Bitfocus Companion插件，用于控制CORXnet设备�
 - **switch2_state**：开关2的状态
 - **switch3_state**：开关3的状态
 - **switch4_state**：开关4的状态
+- **tcp_response**：TCP 原始响应（仅在开启「保存TCP响应」时更新；格式受「转换TCP响应格式」控制）
 
 ## 故障排除
 
@@ -67,8 +68,8 @@ Bob CORXnet模块是一个Bitfocus Companion插件，用于控制CORXnet设备�
 
 ## 版本信息
 
-- **版本**：1.1.1
-- **发布日期**：2026-01-16
+- **版本**：1.1.3
+- **发布日期**：2026-10-25
 - **支持的Companion版本**：Companion 3.0+
 
 ## 联系信息
