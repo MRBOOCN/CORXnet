@@ -1,4 +1,5 @@
 const { combineRgb } = require('@companion-module/base')
+const { SWITCHES } = require('./constants')
 
 module.exports = async function (self) {
 	self.setFeedbackDefinitions({
@@ -17,19 +18,14 @@ module.exports = async function (self) {
 					type: 'dropdown',
 					label: '开关',
 					width: 12,
-					choices: [
-						{ id: 'A01', label: '开关1' },
-						{ id: 'A02', label: '开关2' },
-						{ id: 'A03', label: '开关3' },
-						{ id: 'A04', label: '开关4' }
-					],
-					default: 'A01'
-				}
+					choices: SWITCHES.map((s) => ({ id: s.id, label: s.label })),
+					default: SWITCHES[0].id,
+				},
 			],
 			callback: (feedback) => {
 				const switchId = feedback.options.switch
 				return self.deviceState[switchId] === 1
 			},
-		}
+		},
 	})
 }

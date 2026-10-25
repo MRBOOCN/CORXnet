@@ -1,4 +1,5 @@
 const { InstanceBase, InstanceStatus, runEntrypoint, TCPHelper, UDPHelper } = require('@companion-module/base')
+const { RESPONSE_PREFIX } = require('./constants')
 const UpgradeScripts = require('./upgrades')
 const UpdateActions = require('./actions')
 const UpdateFeedbacks = require('./feedbacks')
@@ -131,7 +132,7 @@ class ModuleInstance extends InstanceBase {
 		this.updateStatus(InstanceStatus.Connecting)
 
 		if (this.config.host) {
-			this.udp = new UDPHelper(this.config.host, this.config.port)
+			this.udp = new UDPHelper(this.config.host, this.getPort())
 			this.updateStatus(InstanceStatus.Ok)
 
 			this.udp.on('error', (err) => {
@@ -145,6 +146,10 @@ class ModuleInstance extends InstanceBase {
 
 			this.udp.on('status_change', (status, message) => {
 				this.updateStatus(status, message)
+			})
+
+			this.udp.on('data', (data) => {
+				this.handleIncomingData(data)
 			})
 
 			this.readAllStatus()
@@ -162,7 +167,7 @@ class ModuleInstance extends InstanceBase {
 		this.updateStatus(InstanceStatus.Connecting)
 
 		if (this.config.host) {
-			this.socket = new TCPHelper(this.config.host, this.config.port)
+			this.socket = new TCPHelper(this.config.host, this.getPort())
 
 			this.socket.on('status_change', (status, message) => {
 				this.updateStatus(status, message)
@@ -179,27 +184,31 @@ class ModuleInstance extends InstanceBase {
 			})
 
 			this.socket.on('data', (data) => {
-				this.buffer += data.toString()
-				this.processBuffer()
-
-				if (this.config.saveresponse) {
-					let dataResponse = data
-
-					if (this.config.convertresponse == 'string') {
-						dataResponse = data.toString()
-					} else if (this.config.convertresponse == 'hex') {
-						dataResponse = data.toString('hex')
-					}
-
-					this.setVariableValues({ tcp_response: dataResponse })
-				}
+				this.handleIncomingData(data)
 			})
 		} else {
 			this.updateStatus(InstanceStatus.BadConfig)
 		}
 	}
 
-	// 处理接收到的数据
+	// 统一处理来自设备的原始数据（TCP 与 UDP 共用）
+	handleIncomingData(data) {
+		// 可选：将原始响应保存到变量 tcp_response
+		if (this.config.saveresponse) {
+			let dataResponse = data
+			if (this.config.convertresponse === 'string') {
+				dataResponse = data.toString()
+			} else if (this.config.convertresponse === 'hex') {
+				dataResponse = data.toString('hex')
+			}
+			this.setVariableValues({ tcp_response: dataResponse })
+		}
+
+		this.buffer += data.toString()
+		this.processBuffer()
+	}
+
+	// 解析缓冲区内以 '}' 分隔的状态上报帧
 	processBuffer() {
 		while (this.buffer.length > 0) {
 			const endIndex = this.buffer.indexOf('}')
@@ -208,15 +217,24 @@ class ModuleInstance extends InstanceBase {
 			const message = this.buffer.substring(0, endIndex + 1)
 			this.buffer = this.buffer.substring(endIndex + 1)
 
-			if (message.startsWith('4')) {
+			// 状态上报帧以前缀字符开头，其后为 JSON 负载
+			if (message.startsWith(RESPONSE_PREFIX)) {
 				try {
-					const data = JSON.parse(message.substring(1))
-					this.updateDeviceState(data)
+					const payload = JSON.parse(message.substring(RESPONSE_PREFIX.length))
+					this.updateDeviceState(payload)
 				} catch (error) {
 					this.log('error', `解析反馈失败: ${error.message}`)
 				}
+			} else if (message.trim().length > 0) {
+				this.log('debug', `忽略未识别的响应: ${message}`)
 			}
 		}
+	}
+
+	// 解析配置端口为整数，缺省回退到 50000
+	getPort() {
+		const port = parseInt(this.config.port, 10)
+		return Number.isFinite(port) && port > 0 ? port : 50000
 	}
 
 	// 更新设备状态
