@@ -5,11 +5,11 @@
 - **不建补丁，最小修复**，保持简洁可维护。
 - **每次操作后同步更新文档**：规则/架构/已知边界变更更新本文档；**版本记录只写入 [CHANGELOG.md](CHANGELOG.md)**（表格倒序，新条目在表头行之下顶部追加），本文档严禁内嵌版本表格或变更流水，末尾「版本记录」小节仅作引用。
 - **每完成一步操作，主动创建对应的 Git 提交记录**：AI 完成一步即执行一次提交（commit 写入同一 `.git`，GitHub Desktop 刷新后即可见）；提交信息（commit message）使用中文。
-- **构建产物随源码提交**：模块 `*.tgz`均须随构建提交；版本升级时替换旧产物，树中始终保持仅当前版本一个。
+- **不提交构建产物**：官方发布由 Bitfocus 开发者门户从 Git 标签服务端构建模块，仓库只保留源码；`*.tgz` 已加入 `.gitignore`，严禁提交。版本号以 `package.json` 为唯一来源，`npm version` 会自动同步至 `companion/manifest.json`。
 
 ## 项目概览
 
-这是一个 Bitfocus Companion 模块（`companion-module-Bob-CORXnet`），用于控制 CORXnet 设备的开关（A01-A04 对应开关1-4）。支持 TCP / UDP 两种连接，设备状态以 `4{JSON}` 帧上报。
+这是一个 Bitfocus Companion 模块（`companion-module-bob-corxnet`），用于控制 CORXnet 设备的开关（A01-A04 对应开关1-4）。支持 TCP / UDP 两种连接，设备状态以 `4{JSON}` 帧上报。
 
 ## 架构与边界
 

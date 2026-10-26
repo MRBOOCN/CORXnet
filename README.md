@@ -1,4 +1,4 @@
-# companion-module-Bob-CORXnet
+# companion-module-bob-corxnet
 
 ## 模块简介
 
