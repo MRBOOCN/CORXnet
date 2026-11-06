@@ -19,7 +19,7 @@
 		"apiVersion": "0.0.0",
 		"entrypoint": "../main.js"
 	},
-	"legacyIds": ["companion-module-Bob-CORXnet"],
+	"legacyIds": ["companion-module-bob-corxnet"],
 	"manufacturer": "Bob",
 	"products": ["CORXnet"],
 	"keywords": ["CORXnet", "control", "switch"]
