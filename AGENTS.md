@@ -2,10 +2,9 @@
 
 ## 核心规则
 
-- **不建补丁，最小修复**，保持简洁可维护。
-- **每次操作后同步更新文档**：规则/架构/已知边界变更更新本文档；**版本记录只写入 [CHANGELOG.md](CHANGELOG.md)**（表格倒序，新条目在表头行之下顶部追加），本文档严禁内嵌版本表格或变更流水，末尾「版本记录」小节仅作引用。
-- **每完成一步操作，主动创建对应的 Git 提交记录**：AI 完成一步即执行一次提交（commit 写入同一 `.git`，GitHub Desktop 刷新后即可见）；提交信息（commit message）使用中文。
-- **不提交构建产物**：官方发布由 Bitfocus 开发者门户从 Git 标签服务端构建模块，仓库只保留源码；`*.tgz` 已加入 `.gitignore`，严禁提交。版本号以 `package.json` 为唯一来源，`npm version` 会自动同步至 `companion/manifest.json`。
+- **最小修复**：不建补丁、不引入过度容错，保持简洁可维护。
+- **文档同步**：规则/架构/边界变更更新本文档；任何版本/变更流水只写入 [CHANGELOG.md](CHANGELOG.md)（格式与追加位置以该文件的表头说明为准），本文档严禁内嵌版本表或变更流水，末尾「版本记录」小节仅作引用。
+- **逐步提交**：每完成一步操作，主动创建对应的 Git 提交记录（commit 写入同一 `.git`，GitHub Desktop 刷新后即可见）；提交信息（commit message）使用中文。
 
 ## 项目概览
 
@@ -23,7 +22,8 @@
 
 ## 已知约定与边界
 
-
+- **版本号**：以 `package.json` 为唯一来源，`npm version` / `yarn version` 会经 `syncVersions.js` 自动同步至 `companion/manifest.json`。
+- **可分发产物**：`companion-module-*.tgz` 为最终分发产物，**必须随仓库提交**；`.gitignore` 严禁添加 `*.tgz` 通配忽略规则。`/pkg`、`/pkg.tgz` 等构建中间产物仍可忽略。
 ## 版本记录
 
 见 [CHANGELOG.md](CHANGELOG.md)。
