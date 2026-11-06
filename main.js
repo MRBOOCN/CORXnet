@@ -137,7 +137,7 @@ class ModuleInstance extends InstanceBase {
 
 			this.udp.on('error', (err) => {
 				this.updateStatus(InstanceStatus.ConnectionFailure, err.message)
-				this.log('error', 'Network error: ' + err.message)
+				this.log('error', '网络错误: ' + err.message)
 			})
 
 			this.udp.on('listening', () => {

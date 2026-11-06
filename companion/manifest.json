@@ -2,7 +2,7 @@
 	"id": "companion-module-Bob-CORXnet",
 	"name": "CORXnet",
 	"shortname": "CORXnet",
-	"description": "Control CORXnet devices with Companion",
+	"description": "使用 Companion 控制 CORXnet 设备",
 	"version": "1.1.3",
 	"license": "MIT",
 	"repository": "git+https://github.com/bitfocus/companion-module-Bob-CORXnet.git",
