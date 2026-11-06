@@ -1,4 +1,10 @@
+# Companion 模块统一忽略规则
+# 说明：/pkg、/pkg.tgz 为构建中间产物，可忽略；
+#       可分发产物 companion-module-*.tgz 必须纳入版本库，请勿添加 *.tgz 通配忽略规则
 node_modules/
 .yarn/
-pkg/
-*.tgz
+/pkg
+/pkg.tgz
+DEBUG-INSPECT
+DEBUG-PACKAGE
+DEBUG-PACKAGED
