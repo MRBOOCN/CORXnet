@@ -8,7 +8,7 @@
 
 ## 项目概览
 
-这是一个 Bitfocus Companion 模块（`companion-module-bob-corxnet`），用于控制 CORXnet 设备的开关（A01-A04 对应开关1-4）。支持 TCP / UDP 两种连接，设备状态以 `4{JSON}` 帧上报。
+这是一个 Bitfocus Companion 模块（`companion-module-Bob-CORXnet`），用于控制 CORXnet 设备的开关（A01-A04 对应开关1-4）。支持 TCP / UDP 两种连接，设备状态以 `4{JSON}` 帧上报。
 
 ## 架构与边界
 
